@@ -162,7 +162,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Consumo do Carro (KM/L)
+                            Consumo do Carro/Moto (KM/L)
                         </label>
                         <input type="text" id="fuelConsumption" placeholder="0,0" required data-mask="decimal"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -193,7 +193,7 @@
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Custo dos 4 Pneus (R$)
+                            Custo dos 2/4 Pneus (R$)
                         </label>
                         <input type="text" id="tireCost" placeholder="0,00" required data-mask="currency"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -204,6 +204,14 @@
                         </label>
                         <input type="text" id="tireLifespan" placeholder="0" required data-mask="integer"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Revisão Preventiva Mensal (R$)
+                        </label>
+                        <input type="text" id="maintenanceCost" placeholder="0,00" data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Opcional - Gasto mensal com revisões preventivas</p>
                     </div>
                 </div>
             </div>
@@ -217,7 +225,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
-                            Valor do Carro - Tabela FIPE (R$)
+                            Valor do Carro/Moto - Tabela FIPE (R$)
                         </label>
                         <input type="text" id="carValue" placeholder="0,00" required data-mask="currency"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
@@ -233,22 +241,28 @@
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Depreciação Anual (%)
                         </label>
-                        <input type="text" id="depreciation" placeholder="0,0" required data-mask="percentage"
+                        <input type="text" id="depreciation" placeholder="0,0" data-mask="percentage"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Opcional - Preencha para ter mais detalhes no ganho final
+                        </p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             Preço do Seguro Mensal (R$)
                         </label>
-                        <input type="text" id="insurance" placeholder="0,00" required data-mask="currency"
+                        <input type="text" id="insurance" placeholder="0,00" data-mask="currency"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Opcional - Preencha para ter mais detalhes no ganho final
+                        </p>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">
                             KM Rodados por Mês (KM)
                         </label>
-                        <input type="text" id="monthlyKm" placeholder="0" required data-mask="integer"
+                        <input type="text" id="monthlyKm" placeholder="0" data-mask="integer"
                             class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Opcional - Preencha para ter mais detalhes no ganho final
+                        </p>
                     </div>
                 </div>
             </div>
@@ -259,12 +273,88 @@
                     <i data-lucide="target" class="mr-2 text-yellow-600"></i>
                     Objetivo de Lucro
                 </h2>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Lucro Mensal Desejado (R$)
-                    </label>
-                    <input type="text" id="desiredProfit" placeholder="0,00" required data-mask="currency"
-                        class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Lucro Desejado Mensal (R$)
+                        </label>
+                        <input type="text" id="desiredProfit" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Dias Trabalhados no Mês
+                        </label>
+                        <input type="number" id="workingDays" placeholder="0" min="0" max="31" required
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                        <p class="text-xs text-gray-500 mt-1">Quantos dias você trabalha por mês (0 a 31)</p>
+                    </div>
+                </div>
+
+                <!-- Informações Calculadas (será preenchido via JavaScript) -->
+                <div id="profitInfo" class="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-4 hidden">
+                    <h3 class="text-sm font-semibold text-blue-800 mb-2">Resumo do seu Objetivo:</h3>
+                    <div class="space-y-1 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Lucro Mensal Desejado:</span>
+                            <span class="font-semibold text-blue-600" id="calculatedMonthly">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Dias Trabalhados:</span>
+                            <span class="font-semibold text-gray-800" id="calculatedDays">0 dias</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-700">Lucro Diário Necessário:</span>
+                            <span class="font-semibold text-blue-600" id="calculatedDaily">R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between border-t border-blue-200 pt-1 mt-1">
+                            <span class="text-gray-700">Custos Operacionais Mensais:</span>
+                            <span class="font-semibold text-orange-600" id="calculatedCosts">- R$ 0,00</span>
+                        </div>
+                        <div class="flex justify-between border-t-2 border-blue-300 pt-2 mt-2">
+                            <span class="text-gray-800 font-semibold">Receita Bruta Necessária:</span>
+                            <span class="font-bold text-green-600 text-lg" id="calculatedNetProfit">R$ 0,00</span>
+                        </div>
+                    </div>
+
+                    <!-- Resumo Diário na Plataforma -->
+                    <div class="mt-4 pt-4 border-t-2 border-blue-300">
+                        <h4 class="text-sm font-semibold text-blue-800 mb-2">Resumo Diário na Plataforma:</h4>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-700">Faturamento Diário Necessário:</span>
+                                <span class="font-semibold text-purple-600" id="calculatedDailyRevenue">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700">Despesa Diária:</span>
+                                <span class="font-semibold text-orange-600" id="calculatedDailyCosts">- R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between border-t border-blue-200 pt-1 mt-1">
+                                <span class="text-gray-800 font-semibold">Lucro Diário:</span>
+                                <span class="font-bold text-green-600" id="calculatedDailyProfit">R$ 0,00</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gasto Diário com Combustível -->
+                    <div class="mt-4 pt-4 border-t-2 border-blue-300">
+                        <h4 class="text-sm font-semibold text-blue-800 mb-2">Gasto Diário com Combustível (Média):</h4>
+                        <div class="space-y-1 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-700">Custo Médio de Combustível por Dia:</span>
+                                <span class="font-semibold text-red-600" id="calculatedDailyFuelCost">R$ 0,00</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-700">Litros Necessários por Dia (Média):</span>
+                                <span class="font-semibold text-gray-800" id="calculatedDailyFuelLiters">0,0 L</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mt-2 italic">
+                                ⚠️ Valores são estimativas médias. Na prática, o abastecimento pode variar conforme sua
+                                estratégia e necessidade diária.
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -406,85 +496,60 @@
         }
 
         // Função para formatar valor monetário (R$) - durante digitação
+        // Trata os dois últimos dígitos como centavos automaticamente
         function maskCurrency(value) {
-            // Remove tudo que não é número ou vírgula
-            let cleanValue = value.replace(/[^\d,]/g, '');
+            // Remove tudo que não é número
+            let cleanValue = value.replace(/\D/g, '');
             if (cleanValue === '') return '';
 
-            // Se tem vírgula, processa como decimal
-            if (cleanValue.includes(',')) {
-                const parts = cleanValue.split(',');
-                // Garante apenas uma vírgula
-                if (parts.length > 2) {
-                    cleanValue = parts[0] + ',' + parts.slice(1).join('');
-                }
+            // Se tem apenas "0", retorna vazio
+            if (cleanValue === '0') return '';
 
-                const finalParts = cleanValue.split(',');
-                let intPart = finalParts[0].replace(/\D/g, '');
-                let decPart = finalParts[1] || '';
-
-                // Limita a 2 casas decimais durante digitação
-                if (decPart.length > 2) {
-                    decPart = decPart.substring(0, 2);
-                }
-
-                // Formata parte inteira com pontos de milhar (se houver)
-                if (intPart) {
-                    const num = parseInt(intPart);
-                    if (num > 0) {
-                        const formattedInt = num.toLocaleString('pt-BR');
-                        return formattedInt + (decPart ? ',' + decPart : '');
-                    }
-                }
-                return intPart + (decPart ? ',' + decPart : '');
-            } else {
-                // Se não tem vírgula, permite digitar normalmente
-                // Formata com pontos de milhar apenas se tiver mais de 3 dígitos
-                const numStr = cleanValue.replace(/\./g, '');
-                if (numStr === '') return '';
-
-                const num = parseInt(numStr);
-                if (num > 999) {
-                    return num.toLocaleString('pt-BR');
-                }
-                return numStr;
+            // Trata os dois últimos dígitos como centavos
+            // Se tem menos de 3 dígitos, adiciona zeros à esquerda
+            let paddedStr = cleanValue;
+            if (paddedStr.length === 1) {
+                paddedStr = '00' + paddedStr;
+            } else if (paddedStr.length === 2) {
+                paddedStr = '0' + paddedStr;
             }
+
+            // Separa parte inteira e centavos (últimos 2 dígitos)
+            const decPart = paddedStr.slice(-2);
+            const intPart = paddedStr.slice(0, -2) || '0';
+
+            // Formata parte inteira com pontos de milhar
+            const num = parseInt(intPart);
+            const formattedInt = num.toLocaleString('pt-BR');
+
+            return formattedInt + ',' + decPart;
         }
 
         // Função para formatar valor monetário ao perder foco (garante 2 casas decimais)
         function formatCurrencyOnBlur(value) {
             if (!value || value === '') return '';
 
-            // Remove pontos de milhar existentes
-            let cleanValue = value.replace(/\./g, '').replace(/[^\d,]/g, '');
+            // Remove tudo que não é número
+            let cleanValue = value.replace(/\D/g, '');
             if (cleanValue === '') return '';
 
-            if (cleanValue.includes(',')) {
-                const parts = cleanValue.split(',');
-                let intPart = parts[0].replace(/\D/g, '');
-                let decPart = parts[1] || '';
-
-                // Limita a 2 casas decimais
-                if (decPart.length > 2) {
-                    decPart = decPart.substring(0, 2);
-                }
-                // Completa com zeros para ter 2 casas
-                while (decPart.length < 2) {
-                    decPart += '0';
-                }
-
-                if (intPart) {
-                    const num = parseInt(intPart);
-                    const formattedInt = num.toLocaleString('pt-BR');
-                    return formattedInt + ',' + decPart;
-                }
-                return '0,' + decPart;
-            } else {
-                // Se não tem vírgula, adiciona ,00
-                const num = parseInt(cleanValue);
-                const formattedInt = num.toLocaleString('pt-BR');
-                return formattedInt + ',00';
+            // Se tem menos de 3 dígitos, adiciona zeros à esquerda
+            let paddedStr = cleanValue;
+            if (paddedStr.length === 1) {
+                paddedStr = '00' + paddedStr;
+            } else if (paddedStr.length === 2) {
+                paddedStr = '0' + paddedStr;
             }
+
+            // Separa parte inteira e centavos
+            const decPart = paddedStr.slice(-2);
+            const intPart = paddedStr.slice(0, -2) || '0';
+
+            // Formata parte inteira com pontos de milhar
+            const num = parseInt(intPart);
+            const formattedInt = num.toLocaleString('pt-BR');
+
+            return formattedInt + ',' + decPart;
         }
 
         // Função para formatar valor decimal (1 casa decimal)
@@ -539,6 +604,42 @@
             return value;
         }
 
+        // Função para mostrar valores de todos os campos
+        function showAllFieldValues() {
+            const fields = {
+                'fuelPrice': 'Preço do Combustível',
+                'fuelConsumption': 'Consumo do Carro/Moto',
+                'oilCost': 'Custo da Troca de Óleo',
+                'oilFrequency': 'Frequência da Troca de Óleo',
+                'tireCost': 'Custo dos 2/4 Pneus',
+                'tireLifespan': 'Vida Útil dos Pneus',
+                'maintenanceCost': 'Revisão Preventiva Mensal',
+                'carValue': 'Valor do Carro/Moto',
+                'ipva': 'IPVA',
+                'depreciation': 'Depreciação Anual',
+                'insurance': 'Preço do Seguro Mensal',
+                'monthlyKm': 'KM Rodados por Mês',
+                'desiredProfit': 'Lucro Desejado Mensal',
+                'workingDays': 'Dias Trabalhados no Mês'
+            };
+
+            console.log('=== VALORES DOS CAMPOS ===');
+            for (const [id, label] of Object.entries(fields)) {
+                const element = document.getElementById(id);
+                if (element) {
+                    const displayValue = element.value || '(vazio)';
+                    let numericValue;
+                    if (id === 'workingDays') {
+                        numericValue = parseInt(element.value) || 0;
+                    } else {
+                        numericValue = parseFormattedValue(element.value);
+                    }
+                    console.log(`${label}: "${displayValue}" → ${numericValue}`);
+                }
+            }
+            console.log('==========================');
+        }
+
         // Aplicar máscaras aos inputs
         document.addEventListener('DOMContentLoaded', function () {
             const inputs = document.querySelectorAll('input[data-mask]');
@@ -548,34 +649,56 @@
 
                 input.addEventListener('input', function (e) {
                     let value = e.target.value;
+                    const cursorPosition = e.target.selectionStart;
 
+                    let newValue = value;
                     switch (maskType) {
                         case 'currency':
-                            e.target.value = maskCurrency(value);
+                            newValue = maskCurrency(value);
                             break;
                         case 'decimal':
-                            e.target.value = maskDecimal(value);
+                            newValue = maskDecimal(value);
                             break;
                         case 'integer':
-                            e.target.value = maskInteger(value);
+                            newValue = maskInteger(value);
                             break;
                         case 'percentage':
-                            e.target.value = maskPercentage(value);
+                            newValue = maskPercentage(value);
                             break;
                     }
+
+                    // Atualiza o valor
+                    e.target.value = newValue;
+
+                    // Ajusta a posição do cursor
+                    // Se o valor mudou, tenta manter o cursor no final
+                    if (newValue !== value) {
+                        setTimeout(() => {
+                            const newLength = newValue.length;
+                            e.target.setSelectionRange(newLength, newLength);
+                        }, 0);
+                    } else {
+                        // Mantém a posição do cursor
+                        setTimeout(() => {
+                            e.target.setSelectionRange(cursorPosition, cursorPosition);
+                        }, 0);
+                    }
+
+                    // Log do valor formatado e numérico
+                    const numericValue = parseFormattedValue(e.target.value);
+                    console.log(`${input.id}: "${e.target.value}" → ${numericValue}`);
+
+                    // Mostrar todos os valores
+                    showAllFieldValues();
                 });
 
                 // Formatar ao perder o foco (blur) para garantir formato correto
                 input.addEventListener('blur', function (e) {
                     if (maskType === 'currency' && e.target.value) {
                         e.target.value = formatCurrencyOnBlur(e.target.value);
-                    }
-                });
-
-                // Permitir backspace e delete
-                input.addEventListener('keydown', function (e) {
-                    if (e.key === 'Backspace' || e.key === 'Delete') {
-                        return true;
+                        const numericValue = parseFormattedValue(e.target.value);
+                        console.log(`${e.target.id} (blur): "${e.target.value}" → ${numericValue}`);
+                        showAllFieldValues();
                     }
                 });
             });
@@ -587,9 +710,19 @@
                 if (carValue > 0) {
                     const ipva = carValue * 0.04;
                     const ipvaInput = document.getElementById('ipva');
-                    // Formata o IPVA usando a função de formatação
-                    const ipvaStr = ipva.toString().replace('.', ',');
-                    ipvaInput.value = formatCurrencyOnBlur(ipvaStr);
+                    // Converte o valor numérico para string sem formatação e aplica a máscara
+                    // Multiplica por 100 para ter centavos como inteiros
+                    const ipvaInCents = Math.round(ipva * 100);
+                    const ipvaStr = ipvaInCents.toString();
+                    ipvaInput.value = maskCurrency(ipvaStr);
+
+                    // Log do cálculo
+                    console.log(`IPVA calculado: ${carValue} * 0.04 = ${ipva} → "${ipvaInput.value}"`);
+                    showAllFieldValues();
+                } else {
+                    // Se o valor do carro/moto for zero ou vazio, limpa o IPVA
+                    const ipvaInput = document.getElementById('ipva');
+                    ipvaInput.value = '';
                 }
             });
         });
@@ -603,6 +736,128 @@
                 maximumFractionDigits: 2
             }).format(value);
         }
+
+        // Função para atualizar informações de lucro em tempo real
+        function updateProfitInfo() {
+            const monthlyProfitGoal = parseFormattedValue(document.getElementById('desiredProfit').value);
+            const workingDays = parseInt(document.getElementById('workingDays').value) || 0;
+
+            if (monthlyProfitGoal === 0 || workingDays === 0) {
+                document.getElementById('profitInfo').classList.add('hidden');
+                return;
+            }
+
+            // Calcular custos operacionais mensais
+            const monthlyKm = parseFormattedValue(document.getElementById('monthlyKm').value);
+            let totalMonthlyCosts = 0;
+
+            const fuelPrice = parseFormattedValue(document.getElementById('fuelPrice').value);
+            const fuelConsumption = parseFormattedValue(document.getElementById('fuelConsumption').value);
+            const oilCost = parseFormattedValue(document.getElementById('oilCost').value);
+            const oilFrequency = parseFormattedValue(document.getElementById('oilFrequency').value);
+            const tireCost = parseFormattedValue(document.getElementById('tireCost').value);
+            const tireLifespan = parseFormattedValue(document.getElementById('tireLifespan').value);
+            const carValue = parseFormattedValue(document.getElementById('carValue').value);
+            const ipva = parseFormattedValue(document.getElementById('ipva').value);
+            const depreciation = parseFormattedValue(document.getElementById('depreciation').value);
+            const insurance = parseFormattedValue(document.getElementById('insurance').value);
+            const maintenanceCost = parseFormattedValue(document.getElementById('maintenanceCost').value);
+
+            // Custos fixos mensais (IPVA é anual, dividido por 12)
+            const ipvaMonthly = ipva / 12;
+            const depreciationMonthly = (carValue * depreciation / 100) / 12;
+            const fixedCostMonthly = ipvaMonthly + insurance + depreciationMonthly + maintenanceCost;
+
+            if (monthlyKm > 0) {
+                // Custo de combustível mensal
+                const fuelCostPerKm = fuelConsumption > 0 ? fuelPrice / fuelConsumption : 0;
+                const monthlyFuelCost = fuelCostPerKm * monthlyKm;
+
+                // Custo de óleo mensal (baseado em quilometragem)
+                const oilCostPerKm = oilFrequency > 0 ? oilCost / oilFrequency : 0;
+                const monthlyOilCost = oilCostPerKm * monthlyKm;
+
+                // Custo de pneus mensal (baseado em quilometragem)
+                const tireCostPerKm = tireLifespan > 0 ? tireCost / tireLifespan : 0;
+                const monthlyTireCost = tireCostPerKm * monthlyKm;
+
+                totalMonthlyCosts = monthlyFuelCost + monthlyOilCost + monthlyTireCost + fixedCostMonthly;
+            } else {
+                // Se não tem KM mensal, calcula apenas custos fixos
+                totalMonthlyCosts = fixedCostMonthly;
+            }
+
+            // Calcular receita bruta necessária (lucro desejado + custos)
+            const requiredRevenue = monthlyProfitGoal + totalMonthlyCosts;
+
+            // Calcular lucro diário necessário
+            const dailyProfitNeeded = workingDays > 0 ? monthlyProfitGoal / workingDays : 0;
+
+            // Calcular valores diários na plataforma
+            const dailyRevenue = workingDays > 0 ? requiredRevenue / workingDays : 0;
+            const dailyCosts = workingDays > 0 ? totalMonthlyCosts / workingDays : 0;
+            const dailyProfit = workingDays > 0 ? monthlyProfitGoal / workingDays : 0;
+
+            // Calcular gasto diário com combustível (média)
+            let dailyFuelCost = 0;
+            let dailyFuelLiters = 0;
+            if (monthlyKm > 0 && fuelConsumption > 0 && workingDays > 0) {
+                // Litros necessários por mês
+                const monthlyFuelLiters = monthlyKm / fuelConsumption;
+                // Custo total de combustível por mês
+                const fuelCostPerKm = fuelConsumption > 0 ? fuelPrice / fuelConsumption : 0;
+                const monthlyFuelCost = fuelCostPerKm * monthlyKm;
+                // Custo médio diário de combustível
+                dailyFuelCost = monthlyFuelCost / workingDays;
+                // Litros necessários por dia (média)
+                dailyFuelLiters = monthlyFuelLiters / workingDays;
+            }
+
+            // Atualizar exibição
+            document.getElementById('calculatedMonthly').textContent = formatCurrency(monthlyProfitGoal);
+            document.getElementById('calculatedDays').textContent = workingDays + ' dias';
+            document.getElementById('calculatedDaily').textContent = formatCurrency(dailyProfitNeeded);
+            document.getElementById('calculatedCosts').textContent = formatCurrency(totalMonthlyCosts);
+            document.getElementById('calculatedNetProfit').textContent = formatCurrency(requiredRevenue);
+
+            // Atualizar resumo diário na plataforma
+            document.getElementById('calculatedDailyRevenue').textContent = formatCurrency(dailyRevenue);
+            document.getElementById('calculatedDailyCosts').textContent = formatCurrency(dailyCosts);
+            document.getElementById('calculatedDailyProfit').textContent = formatCurrency(dailyProfit);
+
+            // Atualizar gasto diário com combustível
+            document.getElementById('calculatedDailyFuelCost').textContent = formatCurrency(dailyFuelCost);
+            document.getElementById('calculatedDailyFuelLiters').textContent = dailyFuelLiters.toFixed(1) + ' L';
+
+            document.getElementById('profitInfo').classList.remove('hidden');
+        }
+
+        // Adicionar listeners para atualizar informações em tempo real
+        document.addEventListener('DOMContentLoaded', function () {
+            // Adicionar listeners para lucro mensal desejado e dias trabalhados
+            const profitFields = ['desiredProfit', 'workingDays'];
+            profitFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function () {
+                        // Aguardar um pouco para a máscara ser aplicada
+                        setTimeout(updateProfitInfo, 100);
+                    });
+                }
+            });
+
+            // Recalcular quando outros campos mudarem (para atualizar custos)
+            const costFields = ['fuelPrice', 'fuelConsumption', 'oilCost', 'oilFrequency', 'tireCost',
+                'tireLifespan', 'carValue', 'ipva', 'depreciation', 'insurance', 'monthlyKm', 'maintenanceCost'];
+            costFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (field) {
+                    field.addEventListener('input', function () {
+                        setTimeout(updateProfitInfo, 100);
+                    });
+                }
+            });
+        });
 
         // Função principal de cálculo
         function calculate() {
@@ -618,28 +873,23 @@
             const depreciation = parseFormattedValue(document.getElementById('depreciation').value);
             const insurance = parseFormattedValue(document.getElementById('insurance').value);
             const monthlyKm = parseFormattedValue(document.getElementById('monthlyKm').value);
-            const desiredProfit = parseFormattedValue(document.getElementById('desiredProfit').value);
-
-            // Validação básica
-            if (monthlyKm === 0) {
-                alert('Por favor, informe a quantidade de KM rodados por mês.');
-                return;
-            }
+            const monthlyProfitGoal = parseFormattedValue(document.getElementById('desiredProfit').value);
+            const maintenanceCost = parseFormattedValue(document.getElementById('maintenanceCost').value);
 
             // Cálculos
             // 1. Custo de Combustível por KM
             const fuelCostPerKm = fuelConsumption > 0 ? fuelPrice / fuelConsumption : 0;
 
-            // 2. Custo de Óleo por KM
+            // 2. Custo de Óleo por KM (baseado em quilometragem)
             const oilCostPerKm = oilFrequency > 0 ? oilCost / oilFrequency : 0;
 
-            // 3. Custo de Pneus por KM
+            // 3. Custo de Pneus por KM (baseado em quilometragem)
             const tireCostPerKm = tireLifespan > 0 ? tireCost / tireLifespan : 0;
 
-            // 4. Custo Fixo Mensal
+            // 4. Custo Fixo Mensal (IPVA é anual, dividido por 12)
             const ipvaMonthly = ipva / 12;
             const depreciationMonthly = (carValue * depreciation / 100) / 12;
-            const fixedCostMonthly = ipvaMonthly + insurance + depreciationMonthly;
+            const fixedCostMonthly = ipvaMonthly + insurance + depreciationMonthly + maintenanceCost;
 
             // 5. Custo Fixo por KM
             const fixedCostPerKm = monthlyKm > 0 ? fixedCostMonthly / monthlyKm : 0;
@@ -647,9 +897,18 @@
             // 6. Custo Total por KM
             const totalCostPerKm = fuelCostPerKm + oilCostPerKm + tireCostPerKm + fixedCostPerKm;
 
-            // 7. Tarifa Mínima Recomendada
-            const profitPerKm = monthlyKm > 0 ? desiredProfit / monthlyKm : 0;
-            const minimumRate = totalCostPerKm + profitPerKm;
+            // 7. Calcular tarifa mínima por KM
+            let minimumRate = 0;
+            if (monthlyKm > 0) {
+                // Receita bruta mensal necessária para atingir o lucro desejado
+                const totalMonthlyCosts = fixedCostMonthly + (totalCostPerKm * monthlyKm);
+                const revenueNeeded = monthlyProfitGoal + totalMonthlyCosts;
+                // Tarifa mínima por KM = receita necessária / KM mensais
+                minimumRate = revenueNeeded / monthlyKm;
+            } else {
+                // Se não tem KM mensal, calcula apenas baseado nos custos
+                minimumRate = totalCostPerKm;
+            }
 
             // Exibir resultados
             document.getElementById('fuelCostPerKm').textContent = formatCurrency(fuelCostPerKm);
@@ -661,6 +920,9 @@
 
             // Mostrar seção de resultado
             document.getElementById('resultSection').classList.remove('hidden');
+
+            // Atualizar informações de lucro
+            updateProfitInfo();
 
             // Scroll suave até o resultado
             document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });

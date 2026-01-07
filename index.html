@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description"
+        content="Calculadora de custo por KM para motoristas de aplicativo - Calcule sua tarifa mínima e lucro desejado">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Meu Lucro KM">
+    <meta name="msapplication-TileColor" content="#2563eb">
+    <meta name="msapplication-config" content="/browserconfig.xml">
+
+    <title>Meu Lucro KM - Calculadora de Custo por KM</title>
+
+    <!-- Manifest -->
+    <link rel="manifest" href="./manifest.json">
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="./icon-512.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Máscaras de input customizadas */
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Animação suave para o resultado */
+        .result-card {
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Mobile-First: Garantir tamanho mínimo para toque (44px) */
+        button,
+        input,
+        select {
+            min-height: 44px;
+            touch-action: manipulation;
+        }
+
+        /* Aviso de instalação PWA */
+        #installPrompt {
+            position: fixed;
+            bottom: 20px;
+            left: 16px;
+            right: 16px;
+            background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #installPrompt.show {
+            display: block;
+        }
+
+        #installPrompt button {
+            min-height: 44px;
+            padding: 12px 24px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen py-4 px-2 sm:py-8 sm:px-4">
+    <!-- Aviso de Instalação PWA -->
+    <div id="installPrompt" class="max-w-md mx-auto">
+        <div class="flex items-start justify-between">
+            <div class="flex-1">
+                <p class="font-semibold mb-1">Instalar Meu Lucro KM</p>
+                <p class="text-sm text-blue-100">Adicione à tela inicial para acesso rápido!</p>
+            </div>
+            <button id="closeInstallPrompt" class="ml-4 text-white hover:text-blue-200" aria-label="Fechar">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <div class="flex gap-2 mt-3">
+            <button id="installButton"
+                class="flex-1 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-colors">
+                Instalar
+            </button>
+            <button id="dismissInstallPrompt" class="px-4 text-blue-100 hover:text-white text-sm">
+                Agora não
+            </button>
+        </div>
+    </div>
+
+    <div class="max-w-4xl mx-auto w-full">
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-2">
+                <i data-lucide="calculator" class="inline-block mr-2"></i>
+                Calculadora de Custo por KM
+            </h1>
+            <p class="text-gray-600">Para motoristas de aplicativo</p>
+        </header>
+
+        <form id="calculatorForm" class="space-y-6">
+            <!-- Card: Operação -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i data-lucide="fuel" class="mr-2 text-blue-600"></i>
+                    Operação
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Tipo de Combustível
+                        </label>
+                        <select id="fuelType"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                            <option value="gasolina">Gasolina</option>
+                            <option value="alcool">Álcool</option>
+                            <option value="gnv">GNV</option>
+                            <option value="diesel">Diesel</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Preço do Combustível (R$)
+                        </label>
+                        <input type="text" id="fuelPrice" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Consumo do Carro (KM/L)
+                        </label>
+                        <input type="text" id="fuelConsumption" placeholder="0,0" required data-mask="decimal"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Manutenção -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i data-lucide="wrench" class="mr-2 text-green-600"></i>
+                    Manutenção
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Custo da Troca de Óleo (R$)
+                        </label>
+                        <input type="text" id="oilCost" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Frequência da Troca de Óleo (KM)
+                        </label>
+                        <input type="text" id="oilFrequency" placeholder="0" required data-mask="integer"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Custo dos 4 Pneus (R$)
+                        </label>
+                        <input type="text" id="tireCost" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Vida Útil dos Pneus (KM)
+                        </label>
+                        <input type="text" id="tireLifespan" placeholder="0" required data-mask="integer"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Custos Fixos -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i data-lucide="dollar-sign" class="mr-2 text-purple-600"></i>
+                    Custos Fixos
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Valor do Carro - Tabela FIPE (R$)
+                        </label>
+                        <input type="text" id="carValue" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            IPVA (R$) <span class="text-xs text-gray-500">(4% da FIPE, editável)</span>
+                        </label>
+                        <input type="text" id="ipva" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Depreciação Anual (%)
+                        </label>
+                        <input type="text" id="depreciation" placeholder="0,0" required data-mask="percentage"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            Preço do Seguro Mensal (R$)
+                        </label>
+                        <input type="text" id="insurance" placeholder="0,00" required data-mask="currency"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+                            KM Rodados por Mês (KM)
+                        </label>
+                        <input type="text" id="monthlyKm" placeholder="0" required data-mask="integer"
+                            class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card: Objetivo de Lucro -->
+            <div class="bg-white rounded-xl shadow-lg p-6">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <i data-lucide="target" class="mr-2 text-yellow-600"></i>
+                    Objetivo de Lucro
+                </h2>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Lucro Mensal Desejado (R$)
+                    </label>
+                    <input type="text" id="desiredProfit" placeholder="0,00" required data-mask="currency"
+                        class="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                </div>
+            </div>
+
+            <!-- Botão Calcular -->
+            <div class="flex justify-center">
+                <button type="submit"
+                    class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold py-4 px-8 rounded-xl shadow-lg hover:from-blue-700 hover:to-indigo-700 active:scale-95 transition-all duration-200 flex items-center justify-center gap-2 text-lg w-full sm:w-auto min-h-[56px]">
+                    <i data-lucide="calculator" class="w-5 h-5"></i>
+                    Calcular
+                </button>
+            </div>
+        </form>
+
+        <!-- Seção de Resultado -->
+        <div id="resultSection" class="hidden mt-8">
+            <div class="bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl shadow-2xl p-8 text-white result-card">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i data-lucide="trending-up" class="mr-2"></i>
+                    Resultado do Cálculo
+                </h2>
+
+                <div class="bg-white/10 backdrop-blur-sm rounded-lg p-6 mb-6">
+                    <div class="text-center">
+                        <p class="text-blue-100 text-sm mb-2">Tarifa Mínima Recomendada</p>
+                        <p id="minimumRate" class="text-4xl md:text-5xl font-bold mb-2">R$ 0,00</p>
+                        <p class="text-blue-100 text-sm">por quilômetro</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <p class="text-blue-100 mb-1">Custo de Combustível por KM</p>
+                        <p id="fuelCostPerKm" class="text-xl font-semibold">R$ 0,00</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <p class="text-blue-100 mb-1">Custo de Óleo por KM</p>
+                        <p id="oilCostPerKm" class="text-xl font-semibold">R$ 0,00</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <p class="text-blue-100 mb-1">Custo de Pneus por KM</p>
+                        <p id="tireCostPerKm" class="text-xl font-semibold">R$ 0,00</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4">
+                        <p class="text-blue-100 mb-1">Custo Fixo por KM</p>
+                        <p id="fixedCostPerKm" class="text-xl font-semibold">R$ 0,00</p>
+                    </div>
+                    <div class="bg-white/10 backdrop-blur-sm rounded-lg p-4 md:col-span-2">
+                        <p class="text-blue-100 mb-1">Custo Total por KM</p>
+                        <p id="totalCostPerKm" class="text-xl font-semibold">R$ 0,00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializar ícones Lucide
+        lucide.createIcons();
+
+        // Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then((registration) => {
+                        console.log('Service Worker registrado com sucesso:', registration.scope);
+                    })
+                    .catch((error) => {
+                        console.log('Falha ao registrar Service Worker:', error);
+                    });
+            });
+        }
+
+        // PWA Install Prompt
+        let deferredPrompt;
+        const installPrompt = document.getElementById('installPrompt');
+        const installButton = document.getElementById('installButton');
+        const closeInstallPrompt = document.getElementById('closeInstallPrompt');
+        const dismissInstallPrompt = document.getElementById('dismissInstallPrompt');
+
+        // Verificar se já foi instalado ou se o usuário já dispensou
+        const installDismissed = localStorage.getItem('pwa-install-dismissed');
+        const installDate = localStorage.getItem('pwa-install-dismissed-date');
+        const oneDayAgo = Date.now() - (24 * 60 * 60 * 1000);
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevenir o prompt padrão
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Mostrar aviso personalizado apenas se não foi dispensado recentemente
+            if (!installDismissed || (installDate && parseInt(installDate) < oneDayAgo)) {
+                installPrompt.classList.add('show');
+                lucide.createIcons();
+            }
+        });
+
+        // Botão de instalação
+        installButton.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+
+                if (outcome === 'accepted') {
+                    console.log('Usuário aceitou a instalação');
+                } else {
+                    console.log('Usuário rejeitou a instalação');
+                }
+
+                deferredPrompt = null;
+                installPrompt.classList.remove('show');
+            }
+        });
+
+        // Fechar aviso
+        closeInstallPrompt.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('pwa-install-dismissed', 'true');
+            localStorage.setItem('pwa-install-dismissed-date', Date.now().toString());
+        });
+
+        dismissInstallPrompt.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+            localStorage.setItem('pwa-install-dismissed', 'true');
+            localStorage.setItem('pwa-install-dismissed-date', Date.now().toString());
+        });
+
+        // Verificar se já está instalado
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA instalado');
+            installPrompt.classList.remove('show');
+            deferredPrompt = null;
+        });
+
+        // Função para converter valor formatado (vírgula) para número (ponto)
+        function parseFormattedValue(value) {
+            if (!value || value === '') return 0;
+            // Remove espaços e substitui vírgula por ponto
+            return parseFloat(value.replace(/\./g, '').replace(',', '.')) || 0;
+        }
+
+        // Função para formatar valor monetário (R$) - durante digitação
+        function maskCurrency(value) {
+            // Remove tudo que não é número ou vírgula
+            let cleanValue = value.replace(/[^\d,]/g, '');
+            if (cleanValue === '') return '';
+
+            // Se tem vírgula, processa como decimal
+            if (cleanValue.includes(',')) {
+                const parts = cleanValue.split(',');
+                // Garante apenas uma vírgula
+                if (parts.length > 2) {
+                    cleanValue = parts[0] + ',' + parts.slice(1).join('');
+                }
+
+                const finalParts = cleanValue.split(',');
+                let intPart = finalParts[0].replace(/\D/g, '');
+                let decPart = finalParts[1] || '';
+
+                // Limita a 2 casas decimais durante digitação
+                if (decPart.length > 2) {
+                    decPart = decPart.substring(0, 2);
+                }
+
+                // Formata parte inteira com pontos de milhar (se houver)
+                if (intPart) {
+                    const num = parseInt(intPart);
+                    if (num > 0) {
+                        const formattedInt = num.toLocaleString('pt-BR');
+                        return formattedInt + (decPart ? ',' + decPart : '');
+                    }
+                }
+                return intPart + (decPart ? ',' + decPart : '');
+            } else {
+                // Se não tem vírgula, permite digitar normalmente
+                // Formata com pontos de milhar apenas se tiver mais de 3 dígitos
+                const numStr = cleanValue.replace(/\./g, '');
+                if (numStr === '') return '';
+
+                const num = parseInt(numStr);
+                if (num > 999) {
+                    return num.toLocaleString('pt-BR');
+                }
+                return numStr;
+            }
+        }
+
+        // Função para formatar valor monetário ao perder foco (garante 2 casas decimais)
+        function formatCurrencyOnBlur(value) {
+            if (!value || value === '') return '';
+
+            // Remove pontos de milhar existentes
+            let cleanValue = value.replace(/\./g, '').replace(/[^\d,]/g, '');
+            if (cleanValue === '') return '';
+
+            if (cleanValue.includes(',')) {
+                const parts = cleanValue.split(',');
+                let intPart = parts[0].replace(/\D/g, '');
+                let decPart = parts[1] || '';
+
+                // Limita a 2 casas decimais
+                if (decPart.length > 2) {
+                    decPart = decPart.substring(0, 2);
+                }
+                // Completa com zeros para ter 2 casas
+                while (decPart.length < 2) {
+                    decPart += '0';
+                }
+
+                if (intPart) {
+                    const num = parseInt(intPart);
+                    const formattedInt = num.toLocaleString('pt-BR');
+                    return formattedInt + ',' + decPart;
+                }
+                return '0,' + decPart;
+            } else {
+                // Se não tem vírgula, adiciona ,00
+                const num = parseInt(cleanValue);
+                const formattedInt = num.toLocaleString('pt-BR');
+                return formattedInt + ',00';
+            }
+        }
+
+        // Função para formatar valor decimal (1 casa decimal)
+        function maskDecimal(value) {
+            // Remove tudo que não é número ou vírgula
+            let cleanValue = value.replace(/[^\d,]/g, '');
+            if (cleanValue === '') return '';
+
+            // Se tem vírgula, processa como decimal
+            if (cleanValue.includes(',')) {
+                const parts = cleanValue.split(',');
+                // Garante apenas uma vírgula
+                if (parts.length > 2) {
+                    cleanValue = parts[0] + ',' + parts.slice(1).join('');
+                }
+                // Limita a 1 casa decimal
+                const finalParts = cleanValue.split(',');
+                if (finalParts.length === 2 && finalParts[1].length > 1) {
+                    cleanValue = finalParts[0] + ',' + finalParts[1].substring(0, 1);
+                }
+                return cleanValue;
+            } else {
+                // Se não tem vírgula, permite digitar normalmente
+                return cleanValue;
+            }
+        }
+
+        // Função para formatar valor inteiro
+        function maskInteger(value) {
+            // Remove tudo que não é número
+            return value.replace(/\D/g, '');
+        }
+
+        // Função para formatar porcentagem
+        function maskPercentage(value) {
+            // Remove tudo que não é número ou vírgula
+            value = value.replace(/[^\d,]/g, '');
+            // Garante apenas uma vírgula
+            const parts = value.split(',');
+            if (parts.length > 2) {
+                value = parts[0] + ',' + parts.slice(1).join('');
+            }
+            // Limita a 1 casa decimal
+            if (parts.length === 2 && parts[1].length > 1) {
+                value = parts[0] + ',' + parts[1].substring(0, 1);
+            }
+            // Limita a 100%
+            const num = parseFormattedValue(value);
+            if (num > 100) {
+                return '100,0';
+            }
+            return value;
+        }
+
+        // Aplicar máscaras aos inputs
+        document.addEventListener('DOMContentLoaded', function () {
+            const inputs = document.querySelectorAll('input[data-mask]');
+
+            inputs.forEach(input => {
+                const maskType = input.getAttribute('data-mask');
+
+                input.addEventListener('input', function (e) {
+                    let value = e.target.value;
+
+                    switch (maskType) {
+                        case 'currency':
+                            e.target.value = maskCurrency(value);
+                            break;
+                        case 'decimal':
+                            e.target.value = maskDecimal(value);
+                            break;
+                        case 'integer':
+                            e.target.value = maskInteger(value);
+                            break;
+                        case 'percentage':
+                            e.target.value = maskPercentage(value);
+                            break;
+                    }
+                });
+
+                // Formatar ao perder o foco (blur) para garantir formato correto
+                input.addEventListener('blur', function (e) {
+                    if (maskType === 'currency' && e.target.value) {
+                        e.target.value = formatCurrencyOnBlur(e.target.value);
+                    }
+                });
+
+                // Permitir backspace e delete
+                input.addEventListener('keydown', function (e) {
+                    if (e.key === 'Backspace' || e.key === 'Delete') {
+                        return true;
+                    }
+                });
+            });
+
+            // Calcular IPVA automaticamente quando o valor do carro mudar
+            const carValueInput = document.getElementById('carValue');
+            carValueInput.addEventListener('input', function () {
+                const carValue = parseFormattedValue(this.value);
+                if (carValue > 0) {
+                    const ipva = carValue * 0.04;
+                    const ipvaInput = document.getElementById('ipva');
+                    // Formata o IPVA usando a função de formatação
+                    const ipvaStr = ipva.toString().replace('.', ',');
+                    ipvaInput.value = formatCurrencyOnBlur(ipvaStr);
+                }
+            });
+        });
+
+        // Formatação de valores monetários
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL',
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(value);
+        }
+
+        // Função principal de cálculo
+        function calculate() {
+            // Obter valores dos inputs e converter de formato brasileiro para número
+            const fuelPrice = parseFormattedValue(document.getElementById('fuelPrice').value);
+            const fuelConsumption = parseFormattedValue(document.getElementById('fuelConsumption').value);
+            const oilCost = parseFormattedValue(document.getElementById('oilCost').value);
+            const oilFrequency = parseFormattedValue(document.getElementById('oilFrequency').value);
+            const tireCost = parseFormattedValue(document.getElementById('tireCost').value);
+            const tireLifespan = parseFormattedValue(document.getElementById('tireLifespan').value);
+            const carValue = parseFormattedValue(document.getElementById('carValue').value);
+            const ipva = parseFormattedValue(document.getElementById('ipva').value);
+            const depreciation = parseFormattedValue(document.getElementById('depreciation').value);
+            const insurance = parseFormattedValue(document.getElementById('insurance').value);
+            const monthlyKm = parseFormattedValue(document.getElementById('monthlyKm').value);
+            const desiredProfit = parseFormattedValue(document.getElementById('desiredProfit').value);
+
+            // Validação básica
+            if (monthlyKm === 0) {
+                alert('Por favor, informe a quantidade de KM rodados por mês.');
+                return;
+            }
+
+            // Cálculos
+            // 1. Custo de Combustível por KM
+            const fuelCostPerKm = fuelConsumption > 0 ? fuelPrice / fuelConsumption : 0;
+
+            // 2. Custo de Óleo por KM
+            const oilCostPerKm = oilFrequency > 0 ? oilCost / oilFrequency : 0;
+
+            // 3. Custo de Pneus por KM
+            const tireCostPerKm = tireLifespan > 0 ? tireCost / tireLifespan : 0;
+
+            // 4. Custo Fixo Mensal
+            const ipvaMonthly = ipva / 12;
+            const depreciationMonthly = (carValue * depreciation / 100) / 12;
+            const fixedCostMonthly = ipvaMonthly + insurance + depreciationMonthly;
+
+            // 5. Custo Fixo por KM
+            const fixedCostPerKm = monthlyKm > 0 ? fixedCostMonthly / monthlyKm : 0;
+
+            // 6. Custo Total por KM
+            const totalCostPerKm = fuelCostPerKm + oilCostPerKm + tireCostPerKm + fixedCostPerKm;
+
+            // 7. Tarifa Mínima Recomendada
+            const profitPerKm = monthlyKm > 0 ? desiredProfit / monthlyKm : 0;
+            const minimumRate = totalCostPerKm + profitPerKm;
+
+            // Exibir resultados
+            document.getElementById('fuelCostPerKm').textContent = formatCurrency(fuelCostPerKm);
+            document.getElementById('oilCostPerKm').textContent = formatCurrency(oilCostPerKm);
+            document.getElementById('tireCostPerKm').textContent = formatCurrency(tireCostPerKm);
+            document.getElementById('fixedCostPerKm').textContent = formatCurrency(fixedCostPerKm);
+            document.getElementById('totalCostPerKm').textContent = formatCurrency(totalCostPerKm);
+            document.getElementById('minimumRate').textContent = formatCurrency(minimumRate);
+
+            // Mostrar seção de resultado
+            document.getElementById('resultSection').classList.remove('hidden');
+
+            // Scroll suave até o resultado
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Event listener para o formulário
+        document.getElementById('calculatorForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            calculate();
+        });
+
+    </script>
+</body>
+
+</html>
